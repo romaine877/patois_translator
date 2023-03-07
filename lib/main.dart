@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:patois_translator/data/dio_service.dart';
 import 'package:patois_translator/presentation/extensions/media_query_extention.dart';
 
 void main() {
@@ -45,24 +46,27 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-
-
   final String title;
+  
+
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
+  final _textController = TextEditingController();
+  String translatedText = 'Transleted text will appear here';
+  void handleTranslation() async{
+    if(_textController.text.isEmpty) return;
+    var text = await DioService().getTranslation(_textController.text);
     setState(() {
-
-      _counter++;
+      translatedText = text;
     });
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -107,23 +111,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 
               ],
             ),
-            const TextField(
-              decoration: InputDecoration(
+             TextField(
+              controller: _textController,
+              decoration: const InputDecoration(
                border: InputBorder.none,
                 labelText: 'Enter your text',
+                
               ),
             
             ),
-            const TextField(
-              decoration: InputDecoration(
-               border: InputBorder.none,
-                labelText: 'translated text here',
-              ),
-            
-            ),
+            Text(translatedText,),
            
                 ElevatedButton(
-                  onPressed: (){},
+                  onPressed: handleTranslation,
                   child: const Text('Translate'),
                 ),
               
@@ -134,7 +134,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {
+          // Add your onPressed code here!
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
