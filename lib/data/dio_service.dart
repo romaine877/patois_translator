@@ -42,7 +42,7 @@ class DioService {
         options: Options(
           headers: {
             'Authorization':
-                'Bearer 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'
+                'Bearer '
           },
         ),
       );
