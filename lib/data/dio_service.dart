@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../domain/models/translation_response.dart';
 
@@ -18,6 +19,7 @@ class DioService {
   ));
 
   Future<String> getTranslation(String text) async {
+    
     try {
       final Response<dynamic> response = await dio.post(
         'https://api.openai.com/v1/chat/completions',
@@ -26,9 +28,9 @@ class DioService {
           "messages": [
             {
               "role": "system",
-              "content": "You translate English to Jamaican Patois."
+              "content": "You translate given text from English to Jamaican Patois."
             },
-            {"role": "user", "content": text}
+            {"role": "user", "content": "translate '$text' to Jamaican Patois"}
           ],
           "temperature": 1,
           "top_p": 1,
@@ -42,13 +44,14 @@ class DioService {
         options: Options(
           headers: {
             'Authorization':
-                'Bearer '
+                'Bearer ${dotenv.env['API_KEY']}'
           },
         ),
       );
 
       if (response.statusCode == 200) {
         final data = response.data;
+        print('error:: ${response.data}');
         return TranslationResponse.fromJson(data)
                 .choices?[0]
                 .message
@@ -65,3 +68,6 @@ class DioService {
     }
   }
 }
+
+
+//vezgac-sAndu9-zuxpuq
